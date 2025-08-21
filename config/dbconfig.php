@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_URL', 'http://localhost/PHP/PHP_Projects/Ecommarce');
+define('BASE_URL', 'http://localhost/PHP/Ecommarce');
 
 class Database
 {

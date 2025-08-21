@@ -5,35 +5,29 @@ include("dbConfig.php");
 
 $error = "";
 
-if($_SERVER["REQUEST_METHOD"] == "POST")
-{
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST["username"] ?? '';
     $password = $_POST["password"] ?? '';
 
     $stmt = $DB_con->prepare('SELECT * FROM admins WHERE username = ?');
-    $stmt->execute([ $username]);
+    $stmt->execute([$username]);
 
-    if($stmt->rowCount() === 1){
+    if ($stmt->rowCount() === 1) {
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if (password_verify($password,$admin['password'])) {
+
+        if (password_verify($password, $admin['password'])) {
             $_SESSION['admin_logged_in'] = true;
+            $_SESSION['admin_id'] = $admin['id'];
             $_SESSION['admin_username'] = $admin['username'];
 
             header("location: index.php");
             exit();
-        }
-        else{
+        } else {
             $error = "Invalid Password";
         }
-
-    }
-
-    else
-    {
+    } else {
         $error = "Admin user not found";
     }
-
 }
 
 ?>

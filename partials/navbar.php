@@ -4,13 +4,13 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 // BASE URL জেনারেশন আরও সুরক্ষিতভাবে
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$BASE = defined('BASE_URL') ? BASE_URL : "{$protocol}://{$host}/PHP/PHP_Projects/Ecommarce";
+$BASE = defined('BASE_URL') ? BASE_URL : "{$protocol}://{$host}/PHP/Ecommarce";
 
 $isLoggedIn = !empty($_SESSION['user_id']);
 $userName = $_SESSION['user_name'] ?? 'Account';
 
 // যদি HTML এ আউটপুট করা হয়, স্যানিটাইজ করা
-$userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8');
+$userName = htmlspecialchars($userName, ENT_QUOTES, 'UTF-8'); 
 ?>
 
 

@@ -6,7 +6,7 @@ $user = new USER();
 
 $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$BASE = defined('BASE_URL') ? BASE_URL : "{$protocol}://{$host}/PHP/PHP_Projects/Ecommarce";
+$BASE = defined('BASE_URL') ? BASE_URL : "{$protocol}://{$host}/PHP/Ecommarce";
 
 $msg = "";
 

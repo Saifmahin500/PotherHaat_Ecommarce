@@ -66,7 +66,7 @@ $flag = $_GET['msg'] ?? '';
         <div class="col-lg-5 mt-3 mt-lg-0">
             <div class="card shadow-sm">
                 <div class="card-body p-4">
-                    <h4 class="mb-3 text-secondary fw-bold" >
+                    <h4 class="mb-3 text-secondary fw-bold">
                         <i class="bi bi-geo-alt-fill me-2"></i> Our Office
                     </h4>
                     <p class="mb-2"><i class="fa-solid fa-location-dot me-2" style="color: #B448CF;"></i>29 Purana Paltan, Noorjahan Sharif Plaza</p>

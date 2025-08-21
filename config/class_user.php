@@ -25,7 +25,7 @@ class USER
         $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
-        return $scheme . '://' . $host . '/PHP/PHP_Projects/Ecommarce';
+        return $scheme . '://' . $host . '/PHP/Ecommarce';
     }
 
     /* Helper Functions */

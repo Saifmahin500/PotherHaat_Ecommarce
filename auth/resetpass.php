@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/class_user.php';
 $user = new USER();
 
 
-$BASE = defined('BASE_URL') ? BASE_URL : ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/PHP/PHP_Projects/Ecommarce');
+$BASE = defined('BASE_URL') ? BASE_URL : ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http') . '://' . ($_SERVER['HTTP_HOST'] ?? 'localhost') . '/PHP/Ecommarce');
 
 $msg = '';
 
