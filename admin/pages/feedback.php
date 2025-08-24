@@ -1,9 +1,10 @@
 <?php
-
 require_once __DIR__ . '/../../config/dbconfig.php';
 
 $database = new Database();
 $conn = $database->dbConnection();
+
+$conn->exec("UPDATE contact_message SET is_read = 1 WHERE is_read = 0");
 
 $sql = "SELECT cm.*, 
 		CASE WHEN u.id IS NULL THEN 0 ELSE 1 END AS is_registered
@@ -13,18 +14,24 @@ $sql = "SELECT cm.*,
 
 $stmt = $conn->query($sql);
 $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h4 class="mb-0">user Feedback</h4>
-    <span class="badge badge-info"> Total: <?= count($rows) ?></span>
+    <div>
+        <span class="badge badge-info"> Total: <?= count($rows) ?></span>
+        <button id="deleteSelected" class="btn btn-sm btn-danger ml-2" disabled>Delete Selected</button>
+    </div>
+
 </div>
 
 <div class="table-responsive">
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped" id="fbTable">
         <thead>
             <tr>
+                <th style="width: 40px;">Select Message
+                    <input type="checkbox" name="selectAll" id="selectAll">
+                </th>
                 <th>#</th>
                 <th>Name / Email</th>
                 <th>Subject</th>
@@ -36,7 +43,10 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </thead>
         <tbody>
             <?php foreach ($rows as $i => $r): ?>
-                <tr>
+                <tr data-id="<?= (int)$r['id']; ?>">
+                    <td>
+                        <input type="checkbox" name="rowChk" class="rowChk" value="<?= (int)$r['id'] ?>">
+                    </td>
                     <td><?= $i + 1 ?></td>
                     <td>
                         <div><strong><?= htmlspecialchars($r['name']) ?></strong><?php if ((int)$r['is_registered'] === 0): ?>
@@ -85,44 +95,113 @@ $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script type="text/javascript">
-    $(function() {
+    document.addEventListener('click', function(e) {
 
-        $(document).on('click', '.relpyBtn', function() {
+        if (e.target.classList.contains('relpyBtn')) {
+            var id = e.target.getAttribute('data-id');
+            document.getElementById('rb-' + id).classList.toggle('d-none');
+        }
 
-            var id = $(this).data('id');
-            $('#rb-' + id).toggleClass('d-none');
-        });
-
-        $(document).on('click', '.sendReply', function() {
-            var id = $(this).data('id');
-            var txt = ($('#rt-' + id).val() || '').trim();
+        if (e.target.classList.contains('sendReply')) {
+            var id = e.target.getAttribute('data-id');
+            var txt = (document.getElementById('rt-' + id).value || '').trim();
 
             if (!txt) {
-                alert("Please type your reply");
+                alert('Please type your reply');
                 return;
             }
 
-            $.ajax({
+            fetch('ajax/send_reply.php', {
 
-                url: 'ajax/send_reply.php',
                 method: 'POST',
-                dataType: 'json',
-                data: {
-                    id: id,
-                    reply: txt
-                }
-            }).done(function(d) {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                credentials: 'same-origin',
+                body: 'id=' + encodeURIComponent(id) + '&reply=' + encodeURIComponent(txt)
+            }).then(r => r.json()).then(d => {
 
-                if (d && d.ok) {
-                    alert('Reply Sent1');
+                if (d.ok) {
+                    alert('Reply Sent!');
                     location.reload();
                 } else {
-                    alert((d && d.err) ? d.err : 'Failed to sent reply');
+                    alert(d.error || 'Failed to send');
                 }
-            }).fail(function(xhr) {
-                alert(xhr.responseText || 'Unexpected error');
-                console.error('send reply failed', xhr.status, xhr.responseText);
-            });
-        });
+            }).catch(() => alert('Unexpected Error'));
+        }
+
+
     });
+
+    (function() {
+
+        var selectAll = document.getElementById('selectAll');
+        var table = document.getElementById('fbTable');
+        var deleteBtn = document.getElementById('deleteSelected');
+
+        function updateDeleteBtnState() {
+            var anyChecked = table.querySelectorAll('tbody .rowChk:checked').length > 0;
+            deleteBtn.disabled = !anyChecked;
+        }
+
+        if (selectAll) {
+            selectAll.addEventListener('change', function() {
+
+                var rows = table.querySelectorAll('tbody .rowChk');
+                rows.forEach(function(chk) {
+
+                    chk.checked = selectAll.checked;
+                });
+                updateDeleteBtnState();
+            });
+        }
+
+        table.addEventListener('change', function(e) {
+
+            if (e.target.classList.contains('rowChk')) {
+                var all = table.querySelectorAll('tbody .rowChk').length;
+                var sel = table.querySelectorAll('tbody .rowChk:checked').length;
+                if (selectAll) selectAll.checked = (all > 0 && sel === all);
+                updateDeleteBtnState();
+            }
+        });
+
+        deleteBtn.addEventListener('click', function() {
+
+            var ids = Array.from(table.querySelectorAll('tbody .rowChk:checked')).map(function(chk) {
+
+                return chk.value;
+            });
+
+            if (ids.length === 0)
+
+            {
+                return;
+            }
+
+            if (!confirm('Delete selected ' + ids.length + 'message(s)? This action cannot be undone.')) {
+                return;
+            }
+
+            fetch('ajax/delete_feedback.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    ids: ids
+                })
+
+            }).then(r => r.json()).then(d => {
+                if (d.ok) {
+                    alert("Deleted: " + d.deleted + ' message(s).');
+                    location.reload();
+                } else {
+                    alert(d.error || 'Delete failed');
+                }
+            }).catch(() => alert('Unexpected Error'));
+
+        });
+    })();
 </script>

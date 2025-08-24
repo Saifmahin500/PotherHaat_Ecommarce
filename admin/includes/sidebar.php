@@ -33,7 +33,9 @@
 		?>
 
 		<!-- Admin profile photo -->
-		<img src="../uploads/admins/<?= htmlspecialchars($adminPhoto) ?>" alt="No photo found" class="rounded-circle" width="80" height="80">
+		<img src="../uploads/admins/<?= htmlspecialchars($adminPhoto) ?>" alt="Profile" class="rounded-circle" width="80" height="80">
+
+
 
 		<!-- Admin username -->
 		<h5 class="mt-2"><?= htmlspecialchars($adminName) ?></h5>
@@ -104,3 +106,20 @@
 		<i class="fas fa-sign-out-alt"></i> Logout
 	</a>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript">
+	(function pollFedback() {
+		$.ajax({
+			url: 'ajax/send_reply.php',
+			method: 'GET',
+			dataType: 'json',
+
+		}).done(function(d) {
+			$('#fbcount').text((d && d.count) ? d.count : 0);
+		}).always(function(d) {
+			setTimeout(pollFedback, 10000)
+		})
+	})();
+</script>
