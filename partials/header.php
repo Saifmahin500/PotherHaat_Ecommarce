@@ -10,7 +10,7 @@ require_once __DIR__ . '/../admin/dbConfig.php';
 
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.2/css/bootstrap.min.css" integrity="sha512-rt/SrQ4UNIaGfDyEXZtNcyWvQeOq0QLygHluFQcSjaGB04IxWhal71tKuzP6K8eYXYB6vJV4pHkXcmFGGQ1/0w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-	<link rel="stylesheet" type="text/css" href="asstes/css/style.css">
+	<link rel="stylesheet" href="assets/css/style.css">
 
 	<style>
 		body {

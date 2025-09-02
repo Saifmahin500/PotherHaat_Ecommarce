@@ -64,7 +64,8 @@ if (!$products) {
 					<div class="align-items-center">
 						<?php if (!empty($_SESSION['user_id'])):   ?>
 							<form method="$_POST" action="cart_add.php" class="m-0">
-								<input type="hidden" name="qty" value="1">
+								<input type="hidden" name="product_id"
+									value="<?= (int)$p['id'] ?>">
 								<button type="submit" style="border:1px solid #B448CF; color:#B448CF; background-color:transparent; transition:0.3s; padding:10px; font-size:14px; text-decoration:none; display:block; width:100%; text-align:center;"
 									onmouseover="this.style.backgroundColor='#B448CF'; this.style.color='#fff';"
 									onmouseout="this.style.backgroundColor='transparent'; this.style.color='#B448CF';">
